@@ -1,6 +1,7 @@
 import { animatedDetailsAccordions } from '$components/accordions';
 import Dialog from '$components/dialog';
 import { setCurrentYear } from '$utils/current-year';
+import { initCursorFollow } from '$utils/cursor-follow';
 import '$utils/disable-webflow-scroll';
 import { disableWebflowAnchorSmoothScroll } from '$utils/disable-webflow-scroll';
 import handleExternalLinks from '$utils/external-link';
@@ -33,6 +34,7 @@ function initComponents() {
 function UIFunctions() {
   duplicateMarqueeList();
   animatedDetailsAccordions();
+  initCursorFollow();
 }
 
 function webflowOverrides() {
