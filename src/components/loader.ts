@@ -10,51 +10,38 @@ export function initLoader(): void {
   if (!wrapper || !circleA || !clipAUse || !circleB || !intersection || !maskB) return;
 
   // Tunables
-  const OFF = 100; // off-screen
-  const MEET = 50; // main meet position
-  const NUDGE = 8; // inward nudge distance
+  const OFF = 110; // off-screen
+  const MEET = 72; // main meet position
 
   const moveInDur = 1.2;
-  const nudgeDur = 0.28;
-  const outDur = 1.0;
+  const outDur = 2.5;
+  const BG_END_OFFSET = -1.5; // seconds from timeline end; >0 after, <0 before
 
   // Initial state
   gsap.set([circleA, clipAUse], { attr: { y: -OFF } });
   gsap.set([circleB, intersection, maskB], { attr: { y: OFF } });
 
   const tl = gsap.timeline({ delay: 2, defaults: { overwrite: 'auto' } });
+  const bgPos = BG_END_OFFSET >= 0 ? `+=${BG_END_OFFSET}` : `-=${Math.abs(BG_END_OFFSET)}`;
 
   // SLIDE IN to ±MEET
-  tl.to([circleA, clipAUse], { attr: { y: -MEET }, duration: moveInDur, ease: 'back.out(1.18)' }, 0)
+  tl.to([circleA, clipAUse], { attr: { y: -MEET }, duration: moveInDur, ease: 'back.out(1.5)' }, 0)
     .to(
       [circleB, intersection, maskB],
-      { attr: { y: MEET }, duration: moveInDur, ease: 'back.out(1.18)' },
+      { attr: { y: MEET }, duration: moveInDur, ease: 'back.out(1.5)' },
       0
     )
 
-    // NUDGE closer together
-    .addLabel('nudge')
-    .to(
-      [circleA, clipAUse],
-      { attr: { y: -(MEET - NUDGE) }, duration: nudgeDur, ease: 'power1.inOut' },
-      'nudge'
-    )
+    // SLIDE OUT to opposite sides (cross through)
+    .to([circleA, clipAUse], { attr: { y: OFF }, duration: outDur, ease: 'expo.inOut' }, '>')
     .to(
       [circleB, intersection, maskB],
-      { attr: { y: MEET - NUDGE }, duration: nudgeDur, ease: 'power1.inOut' },
-      'nudge'
-    )
-
-    // Background change with slight delay into the nudge
-    .to(wrapper, { backgroundColor: 'transparent', duration: 0 }, 'nudge+=0.15')
-
-    // SLIDE OUT to ±OFF
-    .to([circleA, clipAUse], { attr: { y: -OFF }, duration: outDur, ease: 'power2.in' }, '>')
-    .to(
-      [circleB, intersection, maskB],
-      { attr: { y: OFF }, duration: outDur, ease: 'power2.in' },
+      { attr: { y: -OFF }, duration: outDur, ease: 'expo.inOut' },
       '<'
     )
+
+    // Background change tied to end of timeline (adjust with BG_END_OFFSET)
+    .to(wrapper, { backgroundColor: 'transparent', duration: 0 }, bgPos)
 
     // HIDE WRAPPER completely at the very end
     .set(wrapper, { display: 'none' });
