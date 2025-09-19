@@ -1,6 +1,6 @@
 import { animatedDetailsAccordions } from '$components/accordions';
 import Dialog from '$components/dialog';
-import { initLoader } from '$components/loader';
+import { initNavbarScroll } from '$components/navbar-scroll';
 import { setCurrentYear } from '$utils/current-year';
 import { initCursorFollow } from '$utils/cursor-follow';
 import '$utils/disable-webflow-scroll';
@@ -8,7 +8,6 @@ import { disableWebflowAnchorSmoothScroll } from '$utils/disable-webflow-scroll'
 import handleExternalLinks from '$utils/external-link';
 import addMainElementId from '$utils/main-element-id';
 import { duplicateMarqueeList } from '$utils/marquee-list';
-import { initNavbarScroll } from '$components/navbar-scroll';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -23,7 +22,6 @@ window.Webflow?.push(() => {
   setCurrentYear();
   addMainElementId();
   handleExternalLinks();
-  initLoader();
   initComponents();
   UIFunctions();
   webflowOverrides();
