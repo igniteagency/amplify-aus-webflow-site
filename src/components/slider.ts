@@ -37,9 +37,13 @@ class Slider {
           : false;
 
       this.swiper = new Swiper(swiperEl, {
-        loop: false,
+        loop: true,
         spaceBetween: 24,
         slidesPerView: 'auto',
+        autoplay: {
+          delay: 2500,
+          disableOnInteraction: false,
+        },
         navigation: navigationConfig,
         slideActiveClass: 'is-active',
         slidePrevClass: 'is-previous',
