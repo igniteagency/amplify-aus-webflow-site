@@ -38,19 +38,20 @@ class Slider {
 
       this.swiper = new Swiper(swiperEl, {
         loop: true,
-        spaceBetween: 24,
+        spaceBetween: 32,
+        speed: 4000,
         slidesPerView: 'auto',
         autoplay: {
-          delay: 2500,
+          delay: 1,
           disableOnInteraction: false,
         },
-        navigation: navigationConfig,
-        slideActiveClass: 'is-active',
-        slidePrevClass: 'is-previous',
-        slideNextClass: 'is-next',
-        a11y: {
-          enabled: true,
-        },
+        // navigation: navigationConfig,
+        // slideActiveClass: 'is-active',
+        // slidePrevClass: 'is-previous',
+        // slideNextClass: 'is-next',
+        // a11y: {
+        //   enabled: true,
+        // },
       });
     });
   }
