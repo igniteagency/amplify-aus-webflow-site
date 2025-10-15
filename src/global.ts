@@ -36,6 +36,8 @@ function UIFunctions() {
   animatedDetailsAccordions();
   initCursorFollow();
   initNavbarScroll();
+
+  window.conditionalLoadScript('[data-smart-download]', 'components/smart-download.js');
 }
 
 function webflowOverrides() {
