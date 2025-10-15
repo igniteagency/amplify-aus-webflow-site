@@ -98,7 +98,7 @@ function pickTarget(btn: Element): { href?: string; platform: Platform } {
 }
 
 let initialized = false;
-export function initSmartDownload(): void {
+function initSmartDownload(): void {
   if (initialized) return;
   initialized = true;
 
@@ -151,3 +151,6 @@ export function initSmartDownload(): void {
     else window.location.assign(finalHref);
   });
 }
+
+window.Webflow = window.Webflow || [];
+window.Webflow?.push(() => initSmartDownload());

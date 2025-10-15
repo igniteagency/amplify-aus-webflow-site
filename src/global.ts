@@ -8,7 +8,6 @@ import { disableWebflowAnchorSmoothScroll } from '$utils/disable-webflow-scroll'
 import handleExternalLinks from '$utils/external-link';
 import addMainElementId from '$utils/main-element-id';
 import { duplicateMarqueeList } from '$utils/marquee-list';
-import { initSmartDownload } from '$components/smart-download';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -37,7 +36,8 @@ function UIFunctions() {
   animatedDetailsAccordions();
   initCursorFollow();
   initNavbarScroll();
-  initSmartDownload();
+
+  window.conditionalLoadScript('[data-smart-download]', 'components/smart-download.js');
 }
 
 function webflowOverrides() {
