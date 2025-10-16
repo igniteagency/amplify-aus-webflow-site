@@ -5,7 +5,6 @@
 
 class Slider {
   COMPONENT_SELECTOR = '[data-slider-el="component"]';
-  AUTOPLAY_PAUSE_ON_HOVER_ATTRIBUTE = 'data-slider-hover-autoplay-pause';
   NAV_PREV_BUTTON_SELECTOR = '[data-slider-el="nav-prev"]';
   NAV_NEXT_BUTTON_SELECTOR = '[data-slider-el="nav-next"]';
 
@@ -43,14 +42,10 @@ class Slider {
         speed: 4000,
         slidesPerView: 'auto',
         autoplay: {
-          delay: 0,
+          delay: 3000,
           disableOnInteraction: false,
-          pauseOnMouseEnter:
-            swiperComponent.getAttribute(this.AUTOPLAY_PAUSE_ON_HOVER_ATTRIBUTE) === 'true'
-              ? true
-              : false,
-          waitForTransition: false,
         },
+        centeredSlides: true,
         // navigation: navigationConfig,
         // slideActiveClass: 'is-active',
         // slidePrevClass: 'is-previous',
