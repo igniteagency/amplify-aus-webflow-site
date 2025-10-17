@@ -39,7 +39,7 @@ class Slider {
       this.swiper = new Swiper(swiperEl, {
         loop: true,
         spaceBetween: 32,
-        speed: 4000,
+        speed: 1000,
         slidesPerView: 'auto',
         autoplay: {
           delay: 3000,
