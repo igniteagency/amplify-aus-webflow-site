@@ -37,7 +37,10 @@ function UIFunctions() {
   initCursorFollow();
   initNavbarScroll();
 
-  window.conditionalLoadScript('[data-smart-download]', 'components/smart-download.js');
+  window.conditionalLoadScript(
+    '[data-smart-download], a[href="https://community.amplifyaus.org/feed"]',
+    'components/smart-download.js'
+  );
 }
 
 function webflowOverrides() {
