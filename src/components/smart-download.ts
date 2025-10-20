@@ -3,21 +3,34 @@
  *
  * Usage:
  * - Add `[data-smart-download]` to any clickable element (e.g., button or link).
- * - Optionally add platform-specific targets via:
+ * - Optional overrides via attributes:
  *     - `data-ios="https://..."`
  *     - `data-android="https://..."`
- *     - `data-web="https://..."` (recommended default for desktop/web)
- * - On click, navigates to the best target for the current platform.
+ *     - `data-web="https://..."` or `data-desktop="https://..."`
+ * - If no overrides are provided, this component uses sensible defaults
+ *   and, when possible, the element's own `href` for desktop/web.
+ * - On click, navigates to the best target for the current platform. On init,
+ *   anchors get their `href` auto-updated to match the detected platform.
  *
- * Desktop behavior: if neither iOS nor Android are detected, only `data-web`
- * is used; otherwise falls back to '/'. This prevents Play Store on desktop.
+ * Desktop behavior: if neither iOS nor Android are detected, uses `data-web`/
+ * `data-desktop` or the element's own `href`. This avoids opening app stores on desktop.
  */
 
 const ATTR_TRIGGER = 'data-smart-download';
+// Also target any plain anchor linking to the community feed
+const FEED_HREF = 'https://community.amplifyaus.org/feed';
 const ATTR_IOS = 'data-ios';
 const ATTR_ANDROID = 'data-android';
 const ATTR_WEB = 'data-web';
 const ATTR_DESKTOP = 'data-desktop'; // alias for data-web (legacy support)
+
+// Site-wide defaults so editors can just add `data-smart-download` to a link
+// and rely on these for iOS/Android. Desktop defaults to the element's own href
+// unless overridden via `data-web`/`data-desktop`.
+const DEFAULT_IOS_URL =
+  'https://apps.apple.com/au/app/amplify-australia/id6745836573';
+const DEFAULT_ANDROID_URL =
+  'https://play.google.com/store/apps/details?id=com.mightybell.amplifyaustralia';
 
 function isIOS(): boolean {
   const ua = navigator.userAgent || '';
@@ -82,18 +95,27 @@ function detectOSName(): string {
   return 'Unknown';
 }
 
+function getAnchorWithin(btn: Element): HTMLAnchorElement | null {
+  if ((btn as HTMLElement).matches?.('a[href]')) return btn as HTMLAnchorElement;
+  return btn.querySelector('a[href]');
+}
+
 function pickTarget(btn: Element): { href?: string; platform: Platform } {
-  const ios = btn.getAttribute(ATTR_IOS) || undefined;
-  const android = btn.getAttribute(ATTR_ANDROID) || undefined;
-  const web = btn.getAttribute(ATTR_WEB) || btn.getAttribute(ATTR_DESKTOP) || undefined;
+  const anchor = getAnchorWithin(btn);
+  const ios = btn.getAttribute(ATTR_IOS) || DEFAULT_IOS_URL;
+  const android = btn.getAttribute(ATTR_ANDROID) || DEFAULT_ANDROID_URL;
+  const web =
+    btn.getAttribute(ATTR_WEB) ||
+    btn.getAttribute(ATTR_DESKTOP) ||
+    anchor?.getAttribute('href') ||
+    undefined;
 
   const platform = detectPlatform();
 
-  if (platform === 'ios' && ios) return { href: ios, platform };
-  if (platform === 'android' && android) return { href: android, platform };
+  if (platform === 'ios') return { href: ios || web, platform };
+  if (platform === 'android') return { href: android || web, platform };
 
-  // Desktop/other: prefer explicit web; do NOT fall back to stores
-  // If no web target provided, return undefined href to allow anchor/default
+  // Desktop/other: prefer explicit web or element's own href; avoid store links
   return { href: web || undefined, platform };
 }
 
@@ -118,16 +140,16 @@ function initSmartDownload(): void {
   document.addEventListener('click', (e) => {
     const target = e.target as Element | null;
     if (!target) return;
-    const btn = target.closest(`[${ATTR_TRIGGER}]`);
+    const btn =
+      target.closest(`[${ATTR_TRIGGER}]`) ||
+      target.closest(`a[href="${FEED_HREF}"]`);
     if (!btn) return;
 
     // Determine chosen URL
     const { href } = pickTarget(btn);
 
     // Respect target behavior and modifier keys
-    const anchor = (btn as HTMLElement).matches?.('a[href]')
-      ? (btn as HTMLAnchorElement)
-      : (btn.querySelector('a[href]') as HTMLAnchorElement | null);
+    const anchor = getAnchorWithin(btn);
     const targetAttr = anchor?.getAttribute('target') || btn.getAttribute('target');
     const mouse = e as MouseEvent;
     const openInNew =
@@ -143,12 +165,26 @@ function initSmartDownload(): void {
       }
     }
     if (!finalHref) return;
-    if (!finalHref) return;
 
     e.preventDefault();
 
     if (openInNew) window.open(finalHref, '_blank', 'noopener,noreferrer');
     else window.location.assign(finalHref);
+  });
+
+  // On init, set anchor hrefs so context menus/long-press use correct destination
+  // Editors can then just add `data-smart-download` to a link and stop there.
+  const elements = Array.from(
+    document.querySelectorAll(`[${ATTR_TRIGGER}], a[href="${FEED_HREF}"]`)
+  );
+  elements.forEach((el) => {
+    const anchor = getAnchorWithin(el);
+    const { href } = pickTarget(el);
+    if (!anchor || !href) return;
+    // Avoid overriding if href already matches the computed target
+    if (anchor.getAttribute('href') !== href) {
+      anchor.setAttribute('href', href);
+    }
   });
 }
 
