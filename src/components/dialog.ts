@@ -11,6 +11,7 @@ class Dialog {
   private readonly DATA_ATTR_OPEN = 'data-dialog-open';
   private readonly DATA_ATTR_CLOSE = 'data-dialog-close';
   private readonly DATA_COMPONENT_SELECTOR = `dialog[${this.DATA_ATTR}]`;
+  private initializedIds = new Set<string>();
 
   constructor() {
     this.init();
@@ -26,6 +27,13 @@ class Dialog {
         console.error('No ID found for dialog component', dialogEl);
         return;
       }
+
+      if (this.initializedIds.has(id)) {
+        console.warn(`Duplicate dialog ID "${id}" found. Skipping initialization.`, dialogEl);
+        return;
+      }
+
+      this.initializedIds.add(id);
 
       const openTriggersList = document.querySelectorAll(`[${this.DATA_ATTR_OPEN}="${id}"]`);
       const closeTriggersList = dialogEl.querySelectorAll(`[${this.DATA_ATTR_CLOSE}="${id}"]`);
