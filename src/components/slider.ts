@@ -27,6 +27,13 @@ class Slider {
       const navPrevButtonEl = swiperComponent.querySelector(this.NAV_PREV_BUTTON_SELECTOR);
       const navNextButtonEl = swiperComponent.querySelector(this.NAV_NEXT_BUTTON_SELECTOR);
 
+      // Allow overriding autoplay delay via attribute on the component wrapper
+      // Usage: <div data-slider-el="component" data-slider-autoplay-delay="5000">...</div>
+      const delayAttr = swiperComponent.getAttribute('data-slider-autoplay-delay')
+        ?? (swiperEl as HTMLElement).getAttribute('data-slider-autoplay-delay');
+      const parsedDelay = delayAttr ? parseInt(delayAttr, 10) : NaN;
+      const autoplayDelay = Number.isFinite(parsedDelay) && parsedDelay > 0 ? parsedDelay : 3000;
+
       const navigationConfig =
         navPrevButtonEl && navNextButtonEl
           ? {
@@ -42,7 +49,7 @@ class Slider {
         speed: 1000,
         slidesPerView: 'auto',
         autoplay: {
-          delay: 3000,
+          delay: autoplayDelay,
           disableOnInteraction: false,
         },
         centeredSlides: true,
