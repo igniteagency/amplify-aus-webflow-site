@@ -8,6 +8,8 @@ import { disableWebflowAnchorSmoothScroll } from '$utils/disable-webflow-scroll'
 import handleExternalLinks from '$utils/external-link';
 import addMainElementId from '$utils/main-element-id';
 import { duplicateMarqueeList } from '$utils/marquee-list';
+import { initIntroText } from '$components/intro-text';
+
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -36,6 +38,8 @@ function UIFunctions() {
   animatedDetailsAccordions();
   initCursorFollow();
   initNavbarScroll();
+  initIntroText({ rotationMaxDeg: 2 });
+
 
   window.conditionalLoadScript(
     '[data-smart-download], a[href="https://community.amplifyaus.org/feed"]',

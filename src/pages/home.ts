@@ -1,7 +1,4 @@
-import { initIntroText } from '$components/intro-text';
+// This file is currently empty because the intro text initialization 
+// has been moved to global.ts to run on all pages.
+export {};
 
-// Run on Webflow DOM ready
-window.Webflow = window.Webflow || [];
-window.Webflow.push(() => {
-  initIntroText({ rotationMaxDeg: 2 });
-});
