@@ -34,6 +34,7 @@ function initComponents() {
 }
 
 function UIFunctions() {
+  window.conditionalLoadScript('[data-el="counter"]', 'components/counter.js');
   duplicateMarqueeList();
   animatedDetailsAccordions();
   initCursorFollow();
